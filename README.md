@@ -55,7 +55,7 @@ python3 -m venv .venv
 (cd web && npm ci && npm run build)
 ```
 
-The command is then `.venv/bin/shire`. macOS protects the Documents, Desktop and Downloads folders: when the clone, or a folder a plugin reads, is inside one of them, macOS asks once whether Python may access it.
+The command is then `.venv/bin/shire`.
 
 | Command | Description |
 |---|---|
