@@ -2,7 +2,7 @@
 
 [![tests](https://github.com/abigailzeke/project-shire/actions/workflows/tests.yml/badge.svg)](https://github.com/abigailzeke/project-shire/actions/workflows/tests.yml)
 
-**An observability platform for always-on laptops and power users. If you can script it, Shire can watch it.**
+**An extensible observability platform for always-on laptops and power users. If you can script it, Shire can watch it.**
 
 Project Shire watches a Mac that runs unattended and shows its state on a mobile-first status page. Everything on that page is a plugin, and a new one takes a single YAML file, or a script in any language. There is no front-end code to write and nothing in Shire to change.
 
