@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "plugin.yaml",
+  "description": "What one plugin watches, how often, and how to show it.",
+  "type": "object",
+  "required": ["name", "check"],
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "What the page calls it." },
+    "description": { "type": "string", "maxLength": 300 },
+    "check": {
+      "enum": ["website", "program", "port", "file", "folder", "script"],
+      "description": "The kind of check. All but script are built in."
+    },
+    "every": { "$ref": "#/$defs/duration", "description": "How often it runs. 1m unless you say." },
+    "timeout": { "$ref": "#/$defs/duration", "description": "How long it may take before it's stopped. 10s unless you say." },
+    "enabled": { "type": "boolean", "description": "Whether it runs. The page can switch it too." },
+    "display": {
+      "enum": ["list", "number", "gauge", "table"],
+      "description": "How the standard widget shows it. A list unless you say."
+    },
+    "history": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Keys of the items to keep 24 hours of: an item's number, or whether it was good."
+    },
+    "watch": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Keys of the items the snapshot watches from the start. Your own choice on the page wins."
+    },
+    "tiles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Keys of the items the snapshot shows as tiles."
+    },
+    "url": {
+      "type": "string",
+      "pattern": "^https?://",
+      "x-plain": "should start with http:// or https://",
+      "description": "website: the page to ask."
+    },
+    "match": { "type": "string", "minLength": 1, "description": "program: a pattern found in its command line." },
+    "host": { "type": "string", "description": "port: where to look. This computer unless you say." },
+    "port": { "type": "integer", "minimum": 1, "maximum": 65535, "description": "port: the port number." },
+    "path": { "type": ["string", "null"], "description": "file and folder: where it is. ~ is your home folder." },
+    "pattern": { "type": "string", "description": "folder: which files count, like *.md. Every file unless you say." },
+    "script": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "macos": { "type": "string" },
+            "linux": { "type": "string" },
+            "windows": { "type": "string" }
+          }
+        }
+      ],
+      "x-plain": "should be a file name, or one for each system, like `macos: macos.py`",
+      "description": "script: the program to run, in the plugin's folder."
+    },
+    "options": { "type": "object", "description": "script: anything of its own. It's handed to the script as it is." }
+  },
+  "allOf": [
+    { "if": { "properties": { "check": { "const": "website" } }, "required": ["check"] }, "then": { "required": ["url"] } },
+    { "if": { "properties": { "check": { "const": "program" } }, "required": ["check"] }, "then": { "required": ["match"] } },
+    { "if": { "properties": { "check": { "const": "port" } }, "required": ["check"] }, "then": { "required": ["port"] } },
+    { "if": { "properties": { "check": { "const": "file" } }, "required": ["check"] }, "then": { "required": ["path"] } },
+    { "if": { "properties": { "check": { "const": "folder" } }, "required": ["check"] }, "then": { "required": ["path"] } },
+    { "if": { "properties": { "check": { "const": "script" } }, "required": ["check"] }, "then": { "required": ["script"] } }
+  ],
+  "$defs": {
+    "duration": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*(s|m|h)$",
+      "x-plain": "should be a number and s, m or h, like 30s, 5m or 1h"
+    }
+  }
+}

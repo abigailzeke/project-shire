@@ -1,0 +1,8 @@
+# Docker: your apps in containers, one item for each compose project.
+
+name: Docker
+description: Your apps in containers, one for each compose project, with which parts are up.
+check: script
+script: collect.py
+every: 1m
+timeout: 25s

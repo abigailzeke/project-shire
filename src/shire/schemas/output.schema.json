@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "A plugin's output",
+  "description": "The standard format: what every plugin finds, in the same fields, so one page can show any of them. A check or a script gives ok, reason, summary and items. The scheduler adds plugin, taken and took_ms, and error when the plugin itself went wrong.",
+  "type": "object",
+  "required": ["plugin", "taken", "ok", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "plugin": { "type": "string", "description": "The plugin's folder name." },
+    "taken": { "type": "integer", "description": "When it ran, in Unix seconds." },
+    "took_ms": { "type": "integer", "description": "How long it took." },
+    "ok": { "type": "boolean", "description": "False when there was nothing to read: see reason or error." },
+    "reason": { "type": "string", "description": "Why there's nothing to read, when what it watches isn't there." },
+    "error": { "type": "string", "description": "What went wrong, when the plugin itself broke." },
+    "summary": { "type": "string", "maxLength": 200, "description": "One line about all of it." },
+    "items": { "type": "array", "maxItems": 500, "items": { "$ref": "#/$defs/item" } }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["key", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string", "minLength": 1, "maxLength": 300, "description": "Never changes, so your name for it, and whether you hide or watch it, survive a restart." },
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "original": { "type": "string", "maxLength": 300, "description": "Its own name on the system, when name is a plainer one. Shown small under it." },
+        "value": { "type": ["string", "number", "null"], "description": "What it reads now: running, 43, 2.1." },
+        "unit": { "type": "string", "maxLength": 20, "description": "What a number is counted in: %, ms, GB." },
+        "state": { "enum": ["good", "warn", "bad"], "description": "Leave it out when the item is only information." },
+        "note": { "type": "string", "maxLength": 4000, "description": "A line or two in plain words." },
+        "section": { "type": "string", "maxLength": 60, "description": "A heading to gather items under." },
+        "facts": {
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] },
+          "description": "Details, shown when the item is opened."
+        },
+        "items": { "type": "array", "maxItems": 200, "items": { "$ref": "#/$defs/item" }, "description": "Its parts, like a project's containers." }
+      }
+    }
+  }
+}

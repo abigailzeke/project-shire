@@ -1,0 +1,12 @@
+# What Claude can reach: its connectors and MCP servers. It asks Claude Code to check each
+# one live, which takes a while, so it runs every 15 minutes.
+
+name: What Claude can reach
+description: "What Claude Code can reach: its MCP servers and connectors, and whether each one answers."
+check: script
+script: collect.py
+every: 15m
+timeout: 90s
+options:
+  # The folder to check from, so that project's own servers count.
+  project: null

@@ -1,0 +1,18 @@
+# Claude Code: your agent. Whether it's running, whether your phone can
+# reach it, what it started and what it has scheduled.
+
+name: Claude Code
+description: Your agent's sessions, Remote Control, what each session started, and the jobs it scheduled.
+check: script
+script: collect.py
+every: 30s
+# The snapshot speaks up when one of these turns amber, turns red or goes missing.
+watch: [agent, remote-control, anthropic]
+tiles: [agent, remote-control]
+options:
+  # The folder you run claude in, whose transcripts say when it was last
+  # active. Without one, any project counts.
+  project: null
+  # Where your agent lists the jobs it schedules. Without one, it's
+  # jobs.json in your space.
+  jobs_file: null

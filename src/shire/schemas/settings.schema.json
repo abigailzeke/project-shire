@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "settings.json",
+  "description": "Your choices for one plugin, which the page saves in your space.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": { "type": "boolean", "description": "Your switch for it: whether it runs. Left out, the plugin's own setting decides." },
+    "name": { "type": "string", "minLength": 1, "maxLength": 60, "description": "Your name for the plugin." },
+    "items": { "$ref": "#/$defs/items" }
+  },
+  "$defs": {
+    "items": {
+      "type": "object",
+      "maxProperties": 2000,
+      "propertyNames": { "minLength": 1, "maxLength": 300 },
+      "additionalProperties": { "$ref": "#/$defs/choice" },
+      "description": "Your choices for its items, each under the item's key."
+    },
+    "choice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 200, "description": "Your name for it." },
+        "note": { "type": "string", "maxLength": 300, "description": "A line of your own about it." },
+        "hidden": { "type": "boolean", "description": "Kept off the page." },
+        "watch": { "type": "boolean", "description": "One you want to hear about." },
+        "items": { "$ref": "#/$defs/items", "description": "Your choices for its parts." }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+# Plain names for common background helpers: programs a company installed
+# that have no app of their own.
+#
+# On the left is the name the helper has on the system, where * stands for
+# anything. On the right is the name the page shows. The original still shows
+# in small type under it. The first line that matches wins.
+
+"io.tailscale.ipn.macsys.network-extension": Tailscale tunnel
+"IntuneMdmDaemon": Intune device management
+"IntuneMdmAgent": Intune device management
+"com.microsoft.teams2.agent": Teams helper
+"Core Audio Driver (MSTeamsAudioDevice.driver)": Teams audio driver
+"Core Audio Driver (ZoomAudioDevice.driver)": Zoom audio driver
+"Core Audio Driver (BlackHole*": BlackHole audio driver
+"*com.flexibits.fantastical2.mac.helper": Fantastical helper
+"com.docker.vmnetd": Docker networking helper
+"JamfDaemon": Jamf device management
+"JamfAgent": Jamf device management
+"falcond": CrowdStrike security
+"PanGPS": GlobalProtect VPN

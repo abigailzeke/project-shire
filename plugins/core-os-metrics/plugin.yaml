@@ -1,0 +1,17 @@
+# Mac health: the computer itself. Whether it's awake, on power, cool and
+# online, and what's using it.
+
+name: Mac health
+description: Whether the Mac is awake, its battery, temperature, memory, processor, storage and network, and its heaviest processes.
+check: script
+script:
+  macos: macos.py
+every: 30s
+timeout: 20s
+history: [awake, power, temperature, memory, processor, network]
+# The snapshot speaks up when one of these turns amber, turns red or goes missing.
+watch: [awake, network]
+tiles: [awake, power, temperature, memory, network]
+options:
+  # The address it knocks on to see whether the Mac is online.
+  check: 1.1.1.1:443

@@ -1,0 +1,16 @@
+# Your things live in ~/.config/project-shire, never here.
+.env
+*.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+*.egg-info/
+node_modules/
+.DS_Store
+*.log
+
+# The page is built from web/ into the package, and its types are made from the schemas.
+src/shire/page/
+web/src/types.gen.ts

@@ -1,0 +1,9 @@
+# Background services: what launchd and cron keep running on this computer,
+# or run on a timer.
+
+name: Background services
+description: Your launchd jobs, the ones apps installed, and your crontab, with what's running and what's on a timer.
+check: script
+script:
+  macos: macos.py
+every: 1m

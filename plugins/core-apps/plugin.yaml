@@ -1,0 +1,8 @@
+# Running apps: what's open on this computer right now.
+
+name: Running apps
+description: Every app that's open, apps running without a window, and background helpers, like device management.
+check: script
+script:
+  macos: macos.py
+every: 30s

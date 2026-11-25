@@ -1,0 +1,11 @@
+# Running scripts: small programs running outside any app.
+
+name: Running scripts
+description: Small programs running outside any app, like Python, Node and shell scripts.
+check: script
+script:
+  macos: macos.py
+every: 30s
+options:
+  # Programs whose own plugin shows what they started, so it isn't shown twice.
+  leave_to: [claude]

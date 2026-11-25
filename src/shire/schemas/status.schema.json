@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "The page's status",
+  "description": "What the server answers when the page asks for everything at once.",
+  "type": "object",
+  "required": ["shire", "groups", "needs", "plugins"],
+  "additionalProperties": false,
+  "properties": {
+    "shire": {
+      "type": "object",
+      "required": ["version", "now", "system"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string" },
+        "now": { "type": "integer", "description": "The computer's clock, in Unix seconds, so the page can tell what's gone stale." },
+        "system": { "type": "string", "description": "macOS, Linux or Windows." }
+      }
+    },
+    "groups": { "$ref": "groups.schema.json" },
+    "needs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/need" },
+      "description": "What the snapshot's line speaks up for: every item you watch that's amber, red or missing."
+    },
+    "plugins": { "type": "array", "items": { "$ref": "#/$defs/plugin" } }
+  },
+  "$defs": {
+    "need": {
+      "type": "object",
+      "required": ["plugin", "key", "path", "name", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "plugin": { "type": "string" },
+        "key": { "type": "string" },
+        "path": { "type": "array", "items": { "type": "string" }, "description": "The keys down to it, when it's a part of another item." },
+        "name": { "type": "string", "description": "Your name for it, or its own." },
+        "why": { "enum": ["missing", "warn", "bad"] },
+        "value": { "type": ["string", "number"] },
+        "unit": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "plugin": {
+      "type": "object",
+      "required": ["id", "name", "core", "enabled", "display", "every", "history", "watch", "tiles", "settings", "output"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "Its folder's name." },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "core": { "type": "boolean", "description": "Whether it comes with Shire." },
+        "enabled": { "type": "boolean", "description": "Whether it runs: your switch on the page, or its own setting until you've touched it." },
+        "display": { "enum": ["list", "number", "gauge", "table"] },
+        "every": { "type": "integer", "description": "How often it runs, in seconds." },
+        "history": { "type": "array", "items": { "type": "string" }, "description": "The keys it keeps 24 hours of." },
+        "watch": { "type": "array", "items": { "type": "string" }, "description": "The keys it watches from the start." },
+        "tiles": { "type": "array", "items": { "type": "string" }, "description": "The keys the snapshot shows as tiles." },
+        "problem": { "type": "string", "description": "Why it can't run, in plain words." },
+        "settings": { "$ref": "settings.schema.json" },
+        "output": {
+          "oneOf": [{ "type": "null" }, { "$ref": "output.schema.json" }],
+          "description": "What it last found. Empty when it's off or hasn't run yet."
+        }
+      }
+    }
+  }
+}

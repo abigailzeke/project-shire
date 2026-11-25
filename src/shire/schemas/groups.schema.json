@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "groups.json",
+  "description": "Your groups: boxes on the page, each with a name and a colour, holding the plugins you put in it, in your order.",
+  "type": "array",
+  "maxItems": 50,
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "plugins"],
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]{0,40}$",
+        "x-plain": "can only have small letters, numbers and dashes",
+        "description": "Never changes, so a group can be renamed."
+      },
+      "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+      "note": { "type": "string", "maxLength": 300, "description": "A line of your own under the name." },
+      "colour": {
+        "type": "string",
+        "pattern": "^[a-z]{1,20}$",
+        "x-plain": "should be a colour's name in small letters, like lilac"
+      },
+      "plugins": {
+        "type": "array",
+        "maxItems": 200,
+        "uniqueItems": true,
+        "items": { "type": "string" },
+        "description": "The plugins in it, by folder name, in your order."
+      }
+    }
+  }
+}

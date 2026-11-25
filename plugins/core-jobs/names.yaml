@@ -1,0 +1,50 @@
+# Plain names for common launchd jobs.
+#
+# On the left is a job's label, where * stands for anything. On the right is
+# the name the page shows. The label still shows in small type under it.
+# The first line that matches wins, so an exact label goes above its family.
+
+"io.github.abigailzeke.shire": Project Shire
+
+"com.google.keystone.*": Google updater
+"com.google.GoogleUpdater.*": Google updater
+"com.microsoft.update.agent": Microsoft AutoUpdate
+"com.microsoft.autoupdate.*": Microsoft AutoUpdate
+"com.microsoft.intuneMDMAgent*": Intune device management
+"*com.microsoft.entrabroker*": Microsoft sign-in broker
+"com.microsoft.OneDrive*Updater*": OneDrive updater
+"com.microsoft.teams*": Teams helper
+"us.zoom.updater*": Zoom updater
+"us.zoom.*": Zoom helper
+"com.docker.socket": Docker socket
+"com.docker.vmnetd": Docker networking helper
+"com.docker.*": Docker helper
+"net.tunnelblick.*": Tunnelblick VPN
+"com.tailscale.*": Tailscale
+"io.tailscale.*": Tailscale
+"com.adobe.ARMDC*": Adobe Acrobat updater
+"com.adobe.*": Adobe helper
+"com.dropbox.DropboxMacUpdate*": Dropbox updater
+"com.dropbox.*": Dropbox helper
+"com.spotify.*": Spotify helper
+"com.jamf*": Jamf device management
+"com.crowdstrike.*": CrowdStrike security
+"com.cloudflare.*": Cloudflare WARP
+"com.logi*": Logitech helper
+"com.grammarly.*": Grammarly helper
+"com.setapp.*": Setapp helper
+"org.pqrs.*": Karabiner keyboard helper
+"com.nordvpn.*": NordVPN
+"*com.1password.*": 1Password helper
+"com.valvesoftware.*": Steam helper
+"com.oracle.java.*": Java updater
+"org.virtualbox.*": VirtualBox
+"com.vmware.*": VMware
+"com.parallels.*": Parallels
+"com.teamviewer.*": TeamViewer
+"com.cisco.*": Cisco VPN
+"com.webex.*": Webex helper
+"com.paloaltonetworks.*": GlobalProtect VPN
+"com.zscaler.*": Zscaler
+"com.malwarebytes.*": Malwarebytes
+"com.backblaze.*": Backblaze backup

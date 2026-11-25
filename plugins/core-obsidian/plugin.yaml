@@ -1,0 +1,14 @@
+# Obsidian: for agents that keep their memory in a vault.
+# It's off until you name your vault. In your space, make
+# plugins/core-obsidian/plugin.yaml with two lines:
+#
+#   path: ~/path/to/your/vault
+#   enabled: true
+
+name: Obsidian
+description: How many notes your vault has, and which changed most recently.
+check: folder
+path: null
+pattern: "*.md"
+every: 5m
+enabled: false
