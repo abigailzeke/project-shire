@@ -6,7 +6,7 @@
 
 Project Shire watches a Mac that runs unattended and shows its state on a mobile-first status page. Everything on that page is a plugin, and a new one takes a single YAML file, or a script in any language. There is no front-end code to write and nothing in Shire to change.
 
-> **Status:** v0.2.0. macOS only.
+> **Status:** v0.2.1. macOS only.
 
 <p align="center">
   <img src="docs/images/tour.gif" width="250" alt="A scroll through the status page">
