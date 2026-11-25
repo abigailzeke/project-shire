@@ -2,7 +2,7 @@
 
 [![tests](https://github.com/abigailzeke/project-shire/actions/workflows/tests.yml/badge.svg)](https://github.com/abigailzeke/project-shire/actions/workflows/tests.yml)
 
-An observability platform for laptop servers and power users.
+An observability platform for always-on laptops and power users.
 
 Project Shire monitors a Mac that runs unattended and reports its state on a mobile-first status page: hardware health, applications, background services, containers and AI agent sessions. Every check is a plugin, so coverage is extended with one YAML file or a script in any language.
 

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "project-shire"
 dynamic = ["version"]
-description = "An observability platform for laptop servers and power users."
+description = "An observability platform for always-on laptops and power users."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
