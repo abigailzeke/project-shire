@@ -2,7 +2,7 @@
 # online, and what's using it.
 
 name: Mac health
-description: Whether the Mac is awake, its battery, temperature, memory, processor, storage and network, and its heaviest processes.
+description: Whether the Mac is awake, its battery, temperature, memory, processor, storage and network.
 check: script
 script:
   macos: macos.py

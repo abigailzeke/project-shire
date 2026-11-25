@@ -1,5 +1,5 @@
 """Mac health, on macOS: one item for each thing worth knowing about the
-computer itself, then its heaviest processes.
+computer itself.
 
 Everything is read with tools that come with macOS (pmset, ioreg, sysctl,
 vm_stat, top) and never needs sudo or a permission prompt. If one reading
@@ -14,10 +14,6 @@ import time
 from shire import fmt, host, script
 
 GB = 1024 ** 3
-HOME = os.path.expanduser("~")
-APP = re.compile(r"^(?:/Applications|/System/Applications|/System/Volumes/Preboot/Cryptexes/App/System/Applications|"
-                 + re.escape(HOME) + r"/Applications)/(?:[^/]+/)*?([^/]+)\.app/")
-MAIN_PROGRAM = re.compile(r"/Contents/MacOS/(.+?)(?:\s+-|$)")
 HOLD = re.compile(r"pid (\d+)\(([^)]+)\):\s*\[[^\]]+\]\s*([\d:]+)\s+(\w+)\s+named:\s*\"([^\"]*)\"(?:\s*\n\s*Details:\s*([^\n]+))?")
 
 
@@ -337,28 +333,9 @@ def this_mac(options):
                       "Network name": f"{local}.local" if local else None}}
 
 
-# ---------------------------------------------------------------- processes
-
-def heaviest(options, count=8):
-    """The processes using the most memory, with an app's helpers counted as
-    part of the app."""
-    groups = {}
-    for p in host.processes():
-        args = p["args"]
-        app, main = APP.match(args), MAIN_PROGRAM.search(args)
-        name = (app.group(1) if app else main.group(1).strip() if main else os.path.basename(args.split(" ")[0]))[:120]
-        g = groups.setdefault(name or "unnamed", {"mem": 0, "cpu": 0.0, "n": 0})
-        g["mem"] += p["rss"]
-        g["cpu"] += p["cpu"]
-        g["n"] += 1
-    top = sorted(groups.items(), key=lambda kv: -kv[1]["mem"])[:count]
-    return [{"key": f"process:{name}", "name": name, "section": "Heaviest processes", "value": fmt.size(g["mem"]),
-             "facts": {"CPU": f"{g['cpu']:.1f}%", "Processes": g["n"]}} for name, g in top]
-
-
 READINGS = [("awake", "Awake", awake), ("power", "Battery", power), ("temperature", "Temperature", temperature),
             ("memory", "Memory", memory), ("processor", "Processor", processor), ("storage", "Storage", storage),
-            ("network", "Network", network), ("this-mac", "This Mac", this_mac), ("processes", "Processes", heaviest)]
+            ("network", "Network", network), ("this-mac", "This Mac", this_mac)]
 
 
 def main():

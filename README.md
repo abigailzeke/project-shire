@@ -85,11 +85,12 @@ The [baseline](docs/v0.2-baseline.md#the-standard-format) lists every field of t
 
 ## Built on its own plugins
 
-The eight plugins included with Shire use the same format and the same layout as any other plugin, so they double as worked examples in [`plugins/`](plugins).
+The nine plugins included with Shire use the same format and the same layout as any other plugin, so they double as worked examples in [`plugins/`](plugins).
 
 | Plugin | Reports |
 |---|---|
-| Mac health | sleep state, battery, temperature, memory, processor, storage, network, heaviest processes |
+| Mac health | sleep state, battery, temperature, memory, processor, storage, network |
+| Heaviest processes | the processes using the most memory |
 | Running apps | open applications, background applications and third-party helpers |
 | Running scripts | scripts and interpreters running outside any application |
 | Background services | launchd jobs and crontab entries, running or scheduled |

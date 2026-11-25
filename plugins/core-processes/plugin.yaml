@@ -1,0 +1,8 @@
+# Heaviest processes: what is using the most memory on this computer.
+
+name: Heaviest processes
+description: The processes using the most memory, with an app's helpers counted as part of the app.
+check: script
+script:
+  macos: macos.py
+every: 30s

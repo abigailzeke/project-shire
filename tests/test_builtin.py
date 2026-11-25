@@ -22,7 +22,7 @@ def builtin(tmp_path, monkeypatch):
 
 def test_there_are_built_in_plugins(builtin):
     assert set(builtin) == {"core-apps", "core-claude-code", "core-connectors", "core-docker", "core-jobs",
-                            "core-obsidian", "core-os-metrics", "core-scripts"}
+                            "core-obsidian", "core-os-metrics", "core-processes", "core-scripts"}
 
 
 def test_every_built_in_plugin_is_named_core(builtin):
@@ -50,6 +50,13 @@ def test_os_metrics_reads_every_part_of_the_mac(builtin):
     keys = [item["key"] for item in out["items"]]
     assert keys[:8] == ["awake", "power", "temperature", "memory", "processor", "storage", "network", "this-mac"]
     assert not [i["key"] for i in out["items"] if str(i.get("note", "")).startswith("It couldn't be read")]
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="the built-in scripts are for macOS")
+def test_heaviest_processes_lists_a_few_by_memory(builtin):
+    out = scheduler.run(builtin["core-processes"])
+    assert 0 < len(out["items"]) <= 8
+    assert all(item["key"].startswith("process:") for item in out["items"])
 
 
 def test_obsidian_asks_for_a_vault_until_you_name_one(builtin):

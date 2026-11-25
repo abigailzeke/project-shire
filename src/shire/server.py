@@ -69,7 +69,7 @@ def default_groups() -> list[dict]:
     """The three groups a fresh install comes with."""
     return [
         {"id": "computer", "name": "Your Mac" if host.SYSTEM == "macos" else "Your computer",
-         "plugins": ["core-os-metrics", "core-apps", "core-scripts", "core-jobs"]},
+         "plugins": ["core-os-metrics", "core-processes", "core-apps", "core-scripts", "core-jobs"]},
         {"id": "agent", "name": "Your agent", "colour": "lilac",
          "plugins": ["core-claude-code", "core-connectors", "core-obsidian"]},
         {"id": "docker", "name": "Docker", "plugins": ["core-docker"]},
