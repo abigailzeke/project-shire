@@ -74,6 +74,17 @@ def test_start_hands_shire_to_launchd_and_stop_takes_it_back(space, monkeypatch,
     assert "Shire is stopped" in capsys.readouterr().out
 
 
+def test_launchd_is_given_the_shire_command_so_an_upgrade_cant_strand_it(monkeypatch, tmp_path):
+    command = tmp_path / "bin" / "shire"
+    command.parent.mkdir()
+    command.write_text("#!/bin/sh\n")
+    command.chmod(0o755)
+    monkeypatch.setattr(cli.sys, "argv", [str(command), "start"])
+    assert cli._command() == [str(command)]
+    monkeypatch.setattr(cli.sys, "argv", ["/somewhere/shire/__main__.py", "start"])  # python -m shire
+    assert cli._command() == [cli.sys.executable, "-m", "shire"]
+
+
 def test_stop_when_it_was_never_started(space, monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(cli, "_plist", lambda: tmp_path / "agents" / "shire.plist")
     monkeypatch.setattr(cli, "_launchctl", lambda *a: SimpleNamespace(returncode=3, stdout="", stderr="No such process"))

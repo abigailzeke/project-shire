@@ -112,6 +112,16 @@ def _launchctl(*args):
     return subprocess.run(["launchctl", *args], capture_output=True, text=True)
 
 
+def _command() -> list[str]:
+    """How launchd starts Shire. When Shire was started through the `shire`
+    command, launchd uses that command too, because its path stays the same
+    when Shire is upgraded. The Python it runs on moves with every version."""
+    found = Path(sys.argv[0])
+    if found.name == "shire" and found.is_file() and os.access(found, os.X_OK):
+        return [str(found.absolute())]
+    return [sys.executable, "-m", "shire"]
+
+
 def _start(where: str, port: int) -> int:
     """Hands Shire to launchd, which keeps it running and starts it again
     when the Mac does."""
@@ -124,7 +134,7 @@ def _start(where: str, port: int) -> int:
         env["SHIRE_HOME"] = os.environ["SHIRE_HOME"]
     job = {
         "Label": LABEL,
-        "ProgramArguments": [sys.executable, "-m", "shire", "run", "--port", str(port), "--host", where],
+        "ProgramArguments": [*_command(), "run", "--port", str(port), "--host", where],
         "RunAtLoad": True,
         "KeepAlive": True,
         "ThrottleInterval": 30,
