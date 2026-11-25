@@ -2,9 +2,9 @@
 
 [![tests](https://github.com/abigailzeke/project-shire/actions/workflows/tests.yml/badge.svg)](https://github.com/abigailzeke/project-shire/actions/workflows/tests.yml)
 
-An observability platform for always-on laptops and power users.
+**An observability platform for always-on laptops and power users. If you can script it, Shire can watch it.**
 
-Project Shire monitors a Mac that runs unattended and reports its state on a mobile-first status page: hardware health, applications, background services, containers and AI agent sessions. Every check is a plugin, so coverage is extended with one YAML file or a script in any language.
+Project Shire watches a Mac that runs unattended and shows its state on a mobile-first status page. Everything on that page is a plugin, and a new one takes a single YAML file, or a script in any language. There is no front-end code to write and nothing in Shire to change.
 
 > **Status:** v0.2.0. macOS only.
 
@@ -16,30 +16,9 @@ Project Shire monitors a Mac that runs unattended and reports its state on a mob
 
 <p align="center"><sub>The page at phone size, with sample data.</sub></p>
 
-## What it monitors
+## Extend it with one file
 
-Eight core plugins are included. Each can be disabled from the page.
-
-| Plugin | Reports |
-|---|---|
-| Mac health | sleep state, battery, temperature, memory, processor, storage, network, heaviest processes |
-| Running apps | open applications, background applications and third-party helpers |
-| Running scripts | scripts and interpreters running outside any application |
-| Background services | launchd jobs and crontab entries, running or scheduled |
-| Docker | Compose projects and the state of each container |
-| Claude Code | sessions, Remote Control, connectivity to Anthropic, scheduled jobs |
-| What Claude can reach | MCP servers and connectors, and whether each responds |
-| Obsidian | note count and recent changes in a vault; disabled until a vault is configured |
-
-A status summary at the top of the page states whether any watched item needs attention. Items are watched, renamed, hidden and grouped from the page, and selected metrics keep 24 hours of history.
-
-## Extending Shire
-
-Shire is built to be extended. Every widget on the page is a plugin, the eight core ones included, and adding one requires no change to Shire and no front-end code. A plugin reports JSON in one standard format, and the page gives it a widget with history, renaming, watching and grouping.
-
-### A plugin in one file
-
-Five built-in checks need only a `plugin.yaml`. For example, `~/.config/project-shire/plugins/my-site/plugin.yaml`:
+Create `~/.config/project-shire/plugins/my-site/plugin.yaml`:
 
 ```yaml
 name: My site
@@ -48,7 +27,7 @@ url: https://example.com
 every: 1m
 ```
 
-The scheduler detects a new plugin within seconds, without a restart.
+Within seconds, and without a restart, the page has a new widget that shows whether the site responds and how fast. Five checks work this way, with no code at all:
 
 | Check | Reports | Requires |
 |---|---|---|
@@ -58,7 +37,7 @@ The scheduler detects a new plugin within seconds, without a restart.
 | `file` | the contents of a JSON or text file | `path` |
 | `folder` | the file count and the most recent changes | `path` |
 
-### A plugin with a script
+## Extend it with a script
 
 For anything else, a plugin runs an executable in any language, kept beside its `plugin.yaml`. This one reports Claude usage limits:
 
@@ -70,7 +49,7 @@ every: 1m
 display: gauge
 ```
 
-The script prints its result as JSON in the standard format:
+The script's only job is to print JSON in Shire's standard format:
 
 ```json
 {
@@ -84,22 +63,42 @@ The script prints its result as JSON in the standard format:
 }
 ```
 
-Shire validates the result, stores it, and renders it as a widget:
+Shire validates the result, stores it, and renders it:
 
 <p align="center">
   <img src="docs/images/plugin-widget.png" width="380" alt="The Claude usage plugin rendered as a widget">
 </p>
 
-- Each item requires a `name` and a `key` that is unique and never changes. `value`, `unit`, `state` (`good`, `warn` or `bad`) and `note` are optional.
-- `display` selects a list, numbers, gauges or a table.
-- Output that does not match the format is rejected, and the page shows the reason.
-- A Python script runs with Shire's own interpreter and can use its helper: `from shire import script`, then `script.done(items)`. A script in another language must be executable (`chmod +x`).
+Each item requires a `name` and a `key` that is unique and never changes. `value`, `unit`, `state` and `note` are optional. A Python script runs with Shire's own interpreter and can use its helper: `from shire import script`, then `script.done(items)`. A script in another language must be executable (`chmod +x`).
+
+## What every plugin gets
+
+A plugin only reports. The page does the rest, for a plugin of any kind:
+
+- **A widget,** shown as a list, numbers, gauges or a table, chosen with `display`.
+- **Status.** An item's `state` is `good`, `warn` or `bad`. A watched item that turns `warn` or `bad`, or goes missing, is raised in the status summary at the top of the page.
+- **History.** Items named in `history` keep 24 hours of readings.
+- **Control from the page.** Any plugin or item can be renamed, hidden, watched, grouped or switched off, from a phone.
+- **Clear errors.** Output that does not match the format never reaches the page, and the page states the reason in plain words.
 
 The [baseline](docs/v0.2-baseline.md#the-standard-format) lists every field of the format, and [every setting](docs/v0.2-baseline.md#plugins) of `plugin.yaml`.
 
-### Overriding a core plugin
+## Built on its own plugins
 
-The directory names of core plugins start with `core-`. To change one, create a directory of the same name in the user directory, with a `plugin.yaml` that contains only the settings to change. For example, `plugins/core-obsidian/plugin.yaml`:
+The eight plugins included with Shire use the same format and the same layout as any other plugin, so they double as worked examples in [`plugins/`](plugins).
+
+| Plugin | Reports |
+|---|---|
+| Mac health | sleep state, battery, temperature, memory, processor, storage, network, heaviest processes |
+| Running apps | open applications, background applications and third-party helpers |
+| Running scripts | scripts and interpreters running outside any application |
+| Background services | launchd jobs and crontab entries, running or scheduled |
+| Docker | Compose projects and the state of each container |
+| Claude Code | sessions, Remote Control, connectivity to Anthropic, scheduled jobs |
+| What Claude can reach | MCP servers and connectors, and whether each responds |
+| Obsidian | note count and recent changes in a vault; disabled until a vault is configured |
+
+Each can be switched off from the page. To change one, create a directory of the same name in the user directory, with a `plugin.yaml` that contains only the settings to change. For example, `plugins/core-obsidian/plugin.yaml`:
 
 ```yaml
 path: ~/path/to/vault
@@ -142,21 +141,6 @@ The command is then `.venv/bin/shire`.
 
 `start` and `run` accept `--host` and `--port`. The defaults are all network interfaces and port 5190.
 
-## Access and security
-
-**Tailscale is strongly recommended.** Shire serves plain HTTP, so without an encrypted connection the access key crosses the network in the clear. Through Tailscale, the connection is encrypted, and the page is reachable from any device on the same Tailscale network:
-
-```
-shire start --host 127.0.0.1
-tailscale serve --bg --tcp=5190 tcp://127.0.0.1:5190
-```
-
-The page is then at `http://<tailscale-name>:5190/?key=<key>`, with the key that `shire link` prints. `tailscale serve --tcp=5190 off` removes the forward.
-
-- **Access key.** Every request requires a random key, generated on first run and stored in `~/.config/project-shire/key`, readable only by its owner.
-- **Without Tailscale.** Shire listens on all network interfaces, so a device on the same network can open the page with the key. Use this on a trusted network only. If the macOS firewall is enabled, it blocks incoming connections to Python until they are allowed in System Settings, under Network, then Firewall.
-- **Write scope.** The API writes display settings only. It cannot add or modify a plugin. The most a key holder can do is enable or disable an existing one.
-
 ## Architecture
 
 ```
@@ -184,6 +168,21 @@ The page is then at `http://<tailscale-name>:5190/?key=<key>`, with the key that
 - All user data is kept in the **user directory**, `~/.config/project-shire` or `SHIRE_HOME`, never in the repository: `plugins/` for user plugins, `user-settings/` for choices made on the page, and `data/` for results, which is safe to delete.
 
 The full design is in the [v0.2 baseline](docs/v0.2-baseline.md).
+
+## Access and security
+
+**Tailscale is strongly recommended.** Shire serves plain HTTP, so without an encrypted connection the access key crosses the network in the clear. Through Tailscale, the connection is encrypted, and the page is reachable from any device on the same Tailscale network:
+
+```
+shire start --host 127.0.0.1
+tailscale serve --bg --tcp=5190 tcp://127.0.0.1:5190
+```
+
+The page is then at `http://<tailscale-name>:5190/?key=<key>`, with the key that `shire link` prints. `tailscale serve --tcp=5190 off` removes the forward.
+
+- **Access key.** Every request requires a random key, generated on first run and stored in `~/.config/project-shire/key`, readable only by its owner.
+- **Without Tailscale.** Shire listens on all network interfaces, so a device on the same network can open the page with the key. Use this on a trusted network only. If the macOS firewall is enabled, it blocks incoming connections to Python until they are allowed in System Settings, under Network, then Firewall.
+- **Write scope.** The API writes display settings only. It cannot add or modify a plugin. The most a key holder can do is enable or disable an existing one.
 
 ## Development
 

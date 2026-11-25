@@ -176,7 +176,7 @@ def _stop() -> int:
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(prog="shire", description="An observability platform for always-on laptops and power users.")
+    parser = argparse.ArgumentParser(prog="shire", description="An observability platform for always-on laptops and power users. If you can script it, Shire can watch it.")
     parser.add_argument("--version", action="version", version=f"shire {__version__}")
     commands = parser.add_subparsers(dest="command", required=True)
     run = commands.add_parser("run", help="run Shire here, until you stop it")
