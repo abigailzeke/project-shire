@@ -33,6 +33,81 @@ Eight core plugins are included. Each can be disabled from the page.
 
 A status summary at the top of the page states whether any watched item needs attention. Items are watched, renamed, hidden and grouped from the page, and selected metrics keep 24 hours of history.
 
+## Extending Shire
+
+Shire is built to be extended. Every widget on the page is a plugin, the eight core ones included, and adding one requires no change to Shire and no front-end code. A plugin reports JSON in one standard format, and the page gives it a widget with history, renaming, watching and grouping.
+
+### A plugin in one file
+
+Five built-in checks need only a `plugin.yaml`. For example, `~/.config/project-shire/plugins/my-site/plugin.yaml`:
+
+```yaml
+name: My site
+check: website
+url: https://example.com
+every: 1m
+```
+
+The scheduler detects a new plugin within seconds, without a restart.
+
+| Check | Reports | Requires |
+|---|---|---|
+| `website` | whether a URL responds, and the response time | `url` |
+| `program` | whether a matching process is running | `match` |
+| `port` | whether a port accepts connections | `port` |
+| `file` | the contents of a JSON or text file | `path` |
+| `folder` | the file count and the most recent changes | `path` |
+
+### A plugin with a script
+
+For anything else, a plugin runs an executable in any language, kept beside its `plugin.yaml`. This one reports Claude usage limits:
+
+```yaml
+name: Claude usage
+check: script
+script: collect.py
+every: 1m
+display: gauge
+```
+
+The script prints its result as JSON in the standard format:
+
+```json
+{
+  "summary": "41% of the week · 12% of this session",
+  "items": [
+    {"key": "week", "name": "This week", "value": 41, "unit": "%",
+     "state": "good", "note": "Resets Sat 9:00 am"},
+    {"key": "session", "name": "This session", "value": 12, "unit": "%",
+     "note": "Resets 11:00 pm"}
+  ]
+}
+```
+
+Shire validates the result, stores it, and renders it as a widget:
+
+<p align="center">
+  <img src="docs/images/plugin-widget.png" width="380" alt="The Claude usage plugin rendered as a widget">
+</p>
+
+- Each item requires a `name` and a `key` that is unique and never changes. `value`, `unit`, `state` (`good`, `warn` or `bad`) and `note` are optional.
+- `display` selects a list, numbers, gauges or a table.
+- Output that does not match the format is rejected, and the page shows the reason.
+- A Python script runs with Shire's own interpreter and can use its helper: `from shire import script`, then `script.done(items)`. A script in another language must be executable (`chmod +x`).
+
+The [baseline](docs/v0.2-baseline.md#the-standard-format) lists every field of the format, and [every setting](docs/v0.2-baseline.md#plugins) of `plugin.yaml`.
+
+### Overriding a core plugin
+
+The directory names of core plugins start with `core-`. To change one, create a directory of the same name in the user directory, with a `plugin.yaml` that contains only the settings to change. For example, `plugins/core-obsidian/plugin.yaml`:
+
+```yaml
+path: ~/path/to/vault
+enabled: true
+```
+
+Do not edit the installed copy of a plugin, because an update replaces it.
+
 ## Installation
 
 Shire requires macOS. Claude Code and Tailscale are optional.
@@ -109,62 +184,6 @@ The page is then at `http://<tailscale-name>:5190/?key=<key>`, with the key that
 - All user data is kept in the **user directory**, `~/.config/project-shire` or `SHIRE_HOME`, never in the repository: `plugins/` for user plugins, `user-settings/` for choices made on the page, and `data/` for results, which is safe to delete.
 
 The full design is in the [v0.2 baseline](docs/v0.2-baseline.md).
-
-## Plugins
-
-### Built-in checks
-
-A plugin is one file, such as `~/.config/project-shire/plugins/my-site/plugin.yaml`:
-
-```yaml
-name: My site
-check: website
-url: https://example.com
-every: 1m
-```
-
-The scheduler detects it within seconds, without a restart.
-
-| Check | Reports | Requires |
-|---|---|---|
-| `website` | whether a URL responds, and the response time | `url` |
-| `program` | whether a matching process is running | `match` |
-| `port` | whether a port accepts connections | `port` |
-| `file` | the contents of a JSON or text file | `path` |
-| `folder` | the file count and the most recent changes | `path` |
-
-The other settings, `every`, `timeout`, `enabled`, `display`, `watch`, `tiles` and `history`, are described in the [baseline](docs/v0.2-baseline.md#plugins).
-
-### Script plugins
-
-For anything the built-in checks do not cover, a plugin runs an executable in any language, kept beside its `plugin.yaml`:
-
-```yaml
-name: My disk
-check: script
-script: check.sh
-every: 5m
-```
-
-```sh
-#!/bin/sh
-echo '{"items": [{"key": "disk", "name": "Disk", "value": 71, "unit": "%", "state": "good"}]}'
-```
-
-The script must be executable (`chmod +x check.sh`) and print JSON in the standard format. Each item requires a `name` and a `key` that is unique and never changes. `value`, `unit`, `state` (`good`, `warn` or `bad`) and `note` are optional. Output that does not match the format is rejected, and the page shows the reason. The [baseline](docs/v0.2-baseline.md#the-standard-format) lists every field.
-
-A Python script runs with Shire's own interpreter and can use its helper: `from shire import script`, then `script.done(items)`.
-
-### Overriding a core plugin
-
-The directory names of core plugins start with `core-`. To change one, create a directory of the same name in the user directory, with a `plugin.yaml` that contains only the settings to change. For example, `plugins/core-obsidian/plugin.yaml`:
-
-```yaml
-path: ~/path/to/vault
-enabled: true
-```
-
-Do not edit the installed copy of a plugin, because an update replaces it.
 
 ## Development
 
